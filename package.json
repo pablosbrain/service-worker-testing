@@ -1,0 +1,8 @@
+{
+  "name": "serviceworkerfetchtesting",
+  "version": "1.0.0",
+  "main": "index.html",
+  "author": "Paul Lunneberg <paul@pablosbrain.com>",
+  "license": "UNLICENSED",
+  "dependencies": {}
+}

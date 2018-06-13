@@ -1,0 +1,31 @@
+{
+  "short_name": "Testing",
+  "name": "Service Worker and Fetch Testing",
+  "icons": [
+    {
+      "src": "/img/1x/round_border_clear_black_18dp.png",
+      "type": "image/png",
+      "sizes": "18x18"
+    }
+    ,{
+      "src": "/img/2x/round_border_clear_black_18dp.png",
+      "type": "image/png",
+      "sizes": "36x36"
+    }
+    ,{
+      "src": "/img/1x/round_border_clear_black_48dp.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    }
+    ,{
+      "src": "/img/2x/round_border_clear_black_48dp.png",
+      "type": "image/png",
+      "sizes": "96x96 192x192 512x512"
+    }
+  ],
+  "start_url": "/?src=pwa",
+  "background_color": "#3367D6",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#3367D6"
+}
