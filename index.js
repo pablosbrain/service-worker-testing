@@ -4,6 +4,13 @@ var domReady = function(e){
   console.log("domReady", e);
   installServiceWorker(e);
   document.querySelector("input[name=fetchButton]").addEventListener("click", fetchButtonEvent, false);
+  document.querySelector("input[name=fetchButton]").addEventListener("touchend", fetchButtonEvent, false);
+  document.querySelector("input[name=cacheButton]").addEventListener("click", cacheButtonEvent, false);
+  document.querySelector("input[name=cacheButton]").addEventListener("touchend", cacheButtonEvent, false);
+  document.querySelector("input[name=addCachedImageButton]").addEventListener("click", addCachedImageButtonEvent, false);
+  document.querySelector("input[name=addCachedImageButton]").addEventListener("touchend", addCachedImageButtonEvent, false);
+
+
   if('caches' in window) {
     document.querySelector("body").classList.add("caches");
     console.log("caches supported!");
@@ -38,10 +45,38 @@ var fetchButtonEvent = function(e){
   fetch(e.target.getAttribute("data-uri"))
   .then(function(response) { return response.json(); })
   .then(function(json) {
-    console.log("json loaded")
-    console.log(json);
+    console.log("fetchButtonEvent() json loaded")
+    console.log("fetchButtonEvent() json", json);
   });
 
+}
+
+
+var cacheButtonEvent = function(e){
+  //https://filipbech.github.io/2017/02/service-worker-and-caching-from-other-origins
+  console.log("cacheButtonEvent");
+
+  caches.open("testingV1-content-cache").then(function(cache) {
+    console.log("cacheButtonEvent() cache", cache);
+    //console.log("cacheButtonEvent() cache add", e.target.getAttribute("data-uri"));
+    //cache.add(e.target.getAttribute("data-uri"));
+    let request = new Request(e.target.getAttribute("data-uri"), { mode: 'no-cors' });
+    console.log("cacheButtonEvent() request", request);
+    fetch(request).then(function(response){
+      cache.put(request, response).then(function(e) {
+        console.log("cacheButtonEvent() cache.put()",e);
+        // request/response pair has been added to the cache
+      });
+    });
+  });
+}
+
+var addCachedImageButtonEvent = function(e){
+  //https://filipbech.github.io/2017/02/service-worker-and-caching-from-other-origins
+  console.log("cacheButtonEvent");
+  let newImg = document.createElement("img");
+  newImg.src = e.target.getAttribute("data-uri");
+  document.querySelector("body").appendChild(newImg);
 }
 
 var viewCaches = function(e){
@@ -53,19 +88,19 @@ var viewCaches = function(e){
 
   if(document.querySelector("body").classList.contains("caches")){
     caches.keys().then(function(cacheKeys) {
-      console.log("cacheKeys", cacheKeys);
+      console.log("viewCaches() cacheKeys", cacheKeys);
       cacheKeys.forEach(function(cacheKey, cacheindex){
         caches.open(cacheKey).then(function(cache) {
           // Cache is created / accessible
-          console.log("cache", cache);
+          //console.log("viewCaches() cache", cache);
           cache.keys().then(function(cachedRequests) {
-            console.log(cachedRequests); // [Request, Request]
+            //console.log(cachedRequests); // [Request, Request]
             cachedRequests.forEach(function(cachedReq, cachedReqIndex){
               let newLi = document.createElement("li");
-              let newLiVal = document.createTextNode(cachedReq.url);
+              let newLiVal = document.createTextNode(cacheKey+" - "+cachedReq.url);
               newLi.appendChild(newLiVal);
               cachedListEl.appendChild(newLi);
-              counter.innerHTML =parseInt(counter.innerHTML)+1;
+              counter.innerHTML = parseInt(document.querySelectorAll("#cachedList li").length);
             });
           });
         });
